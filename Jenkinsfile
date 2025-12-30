@@ -40,7 +40,8 @@ pipeline {
             steps {
                 bat '''
                     echo Packaging application...
-                    tar -czf app-package.tar.gz .
+                    REM Exclude the zip file itself to prevent "file in use" errors
+                    tar -czf app-package.tar.gz --exclude=app-package.tar.gz .
                 '''
             }
         }
@@ -50,12 +51,16 @@ pipeline {
             steps {
                 bat '''
                     echo Deploying application...
-                    if not exist "C:\\tmp\\deployed_flask_app" mkdir "C:\\tmp\\deployed_flask_app"
+                    
+                    REM Clean the deploy directory first (optional but good practice)
+                    if exist "C:\\tmp\\deployed_flask_app" rmdir /s /q "C:\\tmp\\deployed_flask_app"
+                    mkdir "C:\\tmp\\deployed_flask_app"
                     
                     copy app-package.tar.gz "C:\\tmp\\deployed_flask_app\\"
                     
                     cd /d "C:\\tmp\\deployed_flask_app"
                     tar -xzf app-package.tar.gz
+                    
                     echo Deployment Complete at C:\\tmp\\deployed_flask_app
                 '''
             }
