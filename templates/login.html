@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<h1>Login</h1>
+
+<div class="info-box">
+    <p><strong>Test Accounts:</strong></p>
+    <p>Username: <strong>Ahmed</strong> | Password: <strong>ahmed123</strong></p>
+    <p>Username: <strong>Umer</strong> | Password: <strong>umer123</strong></p>
+</div>
+
+<form method="POST" action="{{ url_for('login') }}">
+    {{ form.hidden_tag() }}
+    
+    <div class="form-group">
+        {{ form.username.label(class="form-label") }}
+        {{ form.username(class="form-control") }}
+        {% if form.username.errors %}
+            <div class="error-message">
+                {% for error in form.username.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="form-group">
+        {{ form.password.label(class="form-label") }}
+        {{ form.password(class="form-control") }}
+        {% if form.password.errors %}
+            <div class="error-message">
+                {% for error in form.password.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <button type="submit">Login</button>
+</form>
+{% endblock %}
