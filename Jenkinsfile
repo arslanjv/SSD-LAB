@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        // Stage 1: Checkout (Automatic or Explicit)
+        // Stage 1: Clone Repo
         stage('Clone Repo') {
             steps {
                 checkout scm
@@ -13,10 +13,11 @@ pipeline {
         // Stage 2: Install Dependencies
         stage('Install Dependencies') {
             steps {
-                // Use 'bat' for Windows. 
-                // Note: Windows uses 'call' to activate venv and backslashes for paths.
                 bat '''
-                    python -m venv venv
+                    echo Creating Virtual Environment...
+                    "C:\\Users\\arsla\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" -m venv venv
+                    
+                    echo Activating venv and installing requirements...
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
                 '''
@@ -29,7 +30,7 @@ pipeline {
                 bat '''
                     call venv\\Scripts\\activate
                     set PYTHONPATH=.
-                    pytest || echo "Tests failed but continuing..."
+                    pytest || echo Tests failed but continuing...
                 '''
             }
         }
@@ -50,6 +51,7 @@ pipeline {
                 bat '''
                     echo Deploying application...
                     if not exist "C:\\tmp\\deployed_flask_app" mkdir "C:\\tmp\\deployed_flask_app"
+                    
                     copy app-package.tar.gz "C:\\tmp\\deployed_flask_app\\"
                     
                     cd /d "C:\\tmp\\deployed_flask_app"
